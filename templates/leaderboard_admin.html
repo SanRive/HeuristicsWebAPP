@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Leaderboard</title>
+  <title>Admin Leaderboard</title>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
@@ -17,7 +17,7 @@
 
     h2 {
       text-align: center;
-      color: #2c3e50;
+      color: #c0392b;
       font-size: 2.5em;
       margin-bottom: 10px;
     }
@@ -29,7 +29,7 @@
     }
 
     .tab {
-      background: #4CAF50;
+      background: #e74c3c;
       color: white;
       padding: 10px 20px;
       margin: 0 5px;
@@ -39,7 +39,7 @@
     }
 
     .tab.active {
-      background-color: #2e7d32;
+      background-color: #992d22;
     }
 
     table {
@@ -53,7 +53,7 @@
     }
 
     th {
-      background-color: #4CAF50;
+      background-color: #e74c3c;
       color: white;
       padding: 15px 10px;
       text-align: center;
@@ -93,7 +93,7 @@
   </style>
 </head>
 <body>
-  <h2>Heuristics Tournament Leaderboard</h2>
+  <h2>Admin - Leaderboard Completo</h2>
 
   <div class="tabs">
     {% for func in functions %}
@@ -108,12 +108,14 @@
   <table id="table-{{ func }}" class="leaderboard-table {% if not loop.first %}hidden{% endif %}" data-function="{{ func }}">
     <tr>
       <th>Rank</th>
-      <th>Username</th>
-      <th>Strategy</th>
+      <th>Usuario</th>
+      <th>Estrategia</th>
       <th>F</th>
       <th>CR</th>
       <th>Fitness</th>
       <th>Seed</th>
+      <th>Generaciones</th>
+      <th>Población</th>
     </tr>
     {% for s in submissions %}
     <tr>
@@ -123,7 +125,9 @@
       <td>{{ s.F }}</td>
       <td>{{ s.CR }}</td>
       <td>{{ s.fitness }}</td>
-      <td title="Starting fitness: {{ s.start_fitness }}">🔢 {{ s.seed }}</td>
+      <td title="Start: {{ s.start_fitness }}">🔢 {{ s.seed }}</td>
+      <td>{{ s.generations }}</td>
+      <td>{{ s.NP }}</td>
     </tr>
     {% endfor %}
   </table>
@@ -145,22 +149,19 @@
         if (tab.textContent === func) tab.classList.add("active");
       });
 
-      // Update formula
       document.getElementById("formula").innerHTML = `\\(${formulas[func]}\\)`;
       MathJax.typeset();
 
-      // Update summary
       const table = document.getElementById("table-" + func);
       const fitnesses = Array.from(table.querySelectorAll("td:nth-child(6)")).map(td => parseFloat(td.textContent));
       const avg = (fitnesses.reduce((a, b) => a + b, 0) / fitnesses.length).toFixed(4);
-      document.getElementById("summary").textContent = `Average Best Fitness: ${avg}`;
+      document.getElementById("summary").textContent = `Fitness promedio: ${avg}`;
     }
 
     window.onload = () => {
-  const firstFunc = document.querySelector(".tab").textContent;
-  switchTab(firstFunc);
-};
-
+      const firstFunc = document.querySelector(".tab").textContent;
+      switchTab(firstFunc);
+    };
   </script>
 </body>
 </html>
