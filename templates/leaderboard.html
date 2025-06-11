@@ -114,6 +114,7 @@
       <th>CR</th>
       <th>Fitness</th>
       <th>Seed</th>
+      <th>Generaciones</th>
     </tr>
     {% for s in submissions %}
     <tr>
@@ -124,6 +125,7 @@
       <td>{{ s.CR_display }}</td>
       <td>{{ s.fitness }}</td>
       <td title="Starting fitness: {{ s.start_fitness }}">🔢 {{ s.seed }}</td>
+      <td>{{ s.generations }}</td>
     </tr>
     {% endfor %}
   </table>
@@ -145,22 +147,19 @@
         if (tab.textContent === func) tab.classList.add("active");
       });
 
-      // Update formula
       document.getElementById("formula").innerHTML = `\\(${formulas[func]}\\)`;
       MathJax.typeset();
 
-      // Update summary
       const table = document.getElementById("table-" + func);
       const fitnesses = Array.from(table.querySelectorAll("td:nth-child(6)")).map(td => parseFloat(td.textContent));
       const avg = (fitnesses.reduce((a, b) => a + b, 0) / fitnesses.length).toFixed(4);
-      document.getElementById("summary").textContent = `Average Best Fitness: ${avg}`;
+      document.getElementById("summary").textContent = `Fitness promedio: ${avg}`;
     }
 
     window.onload = () => {
-  const firstFunc = document.querySelector(".tab").textContent;
-  switchTab(firstFunc);
-};
-
+      const firstFunc = document.querySelector(".tab").textContent;
+      switchTab(firstFunc);
+    };
   </script>
 </body>
 </html>
