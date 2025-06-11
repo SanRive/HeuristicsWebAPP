@@ -3,13 +3,81 @@
 <head>
     <title>Leaderboard</title>
     <style>
-        table { border-collapse: collapse; width: 80%; margin: auto; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        th { background: #eee; }
+        /* General body styles */
+        body {
+            background-color: #ffffff; /* White background */
+            color: #333333; /* Darker text for readability */
+            font-family: 'Segoe UI', 'Arial', sans-serif; /* Modern, readable font */
+            margin: 20px; /* Add some padding around the content */
+            line-height: 1.6; /* Improve text readability */
+        }
+
+        /* Leaderboard Title */
+        h2 {
+            text-align: center;
+            color: #2c3e50; /* A darker, professional blue/gray */
+            font-size: 2.5em; /* Larger title */
+            margin-bottom: 30px; /* More space below the title */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+        }
+
+        /* Table styles */
+        table {
+            border-collapse: collapse;
+            width: 90%; /* Make table wider */
+            max-width: 1000px; /* Limit max width for very large screens */
+            margin: auto; /* Center the table */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for the whole table */
+            border-radius: 8px; /* Slightly rounded corners for the table */
+            overflow: hidden; /* Ensures shadow/border-radius works correctly with inner borders */
+        }
+
+        /* Table headers */
+        th {
+            background-color: #4CAF50; /* A pleasant green */
+            color: white; /* White text for contrast */
+            padding: 15px 10px; /* More padding for headers */
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase; /* Uppercase header text */
+            letter-spacing: 0.05em; /* Slightly spaced letters */
+        }
+
+        /* Table cells (data) */
+        td {
+            border: 1px solid #e0e0e0; /* Lighter border color */
+            padding: 12px 10px; /* More padding for cells */
+            text-align: center;
+            vertical-align: middle; /* Center content vertically */
+        }
+
+        /* Alternating row colors for readability */
+        tr:nth-child(even) {
+            background-color: #f8f8f8; /* Very light gray for even rows */
+        }
+
+        /* Hover effect for rows */
+        tr:hover {
+            background-color: #f1f1f1; /* Slightly darker on hover */
+            cursor: pointer; /* Indicate interactivity */
+        }
+
+        /* Specific column width adjustments if needed (optional) */
+        /*
+        th:nth-child(1), td:nth-child(1) { width: 5%; } // Rank
+        th:nth-child(2), td:nth-child(2) { width: 15%; } // Team
+        th:nth-child(3), td:nth-child(3) { width: 10%; } // Function
+        th:nth-child(4), td:nth-child(4) { width: 15%; } // Strategy
+        th:nth-child(5), td:nth-child(5) { width: 5%; }  // F
+        th:nth-child(6), td:nth-child(6) { width: 5%; }  // CR
+        th:nth-child(7), td:nth-child(7) { width: 15%; } // Fitness
+        th:nth-child(8), td:nth-child(8) { width: 10%; } // Seed
+        */
+
     </style>
 </head>
 <body>
-    <h2 style="text-align:center;">Heuristics Tournament Leaderboard</h2>
+    <h2>Heuristics Tournament Leaderboard</h2>
     <table>
         <tr>
             <th>Rank</th>
@@ -35,4 +103,4 @@
         {% endfor %}
     </table>
 </body>
-</html> 
+</html>
