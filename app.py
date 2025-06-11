@@ -6,8 +6,8 @@ import numpy as np
 
 app = Flask(__name__)
 
-# Constants
-SUBMISSIONS_FILE = "submissions.json"
+# In-memory submission store (not persistent)
+submissions_memory = []
 
 # -------------------------------
 # DE algorithm implementation
@@ -72,18 +72,11 @@ def run_de(strategy, func_name, F, CR, seed=0, D=10, NP=30, time_limit=5):
 # Helpers
 # -------------------------------
 def load_submissions():
-    if os.path.exists(SUBMISSIONS_FILE):
-        try:
-            with open(SUBMISSIONS_FILE, "r") as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            print("⚠️ Warning: submissions.json is invalid, resetting.")
-            return []
-    return []
+    return submissions_memory
 
 def save_submissions(submissions):
-    with open(SUBMISSIONS_FILE, "w") as f:
-        json.dump(submissions, f, indent=2)
+    global submissions_memory
+    submissions_memory = submissions
 
 # -------------------------------
 # Routes
@@ -140,5 +133,4 @@ def leaderboard():
     return render_template("leaderboard.html", submissions=submissions)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False)
-
+    app.run(host='0.0.0.0', debug=True)
