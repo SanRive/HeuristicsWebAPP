@@ -105,7 +105,7 @@ def get_range(val):
 def submit():
     data = request.json
 
-    required_fields = ["team", "strategy", "F", "CR", "function", "seed"]
+    required_fields = ["team", "strategy", "F", "CR", "function", "seed", "NP"]
     if not all(field in data for field in required_fields):
         return jsonify({"status": "error", "message": "Missing required fields."}), 400
 
@@ -120,7 +120,8 @@ def submit():
             F=data["F"],
             CR=data["CR"],
             seed=data["seed"],
-            D=10
+            D=10,
+            NP=data["NP"]
         )
         runtime = round(time.time() - start_time, 3)
     except Exception as e:
@@ -136,6 +137,7 @@ def submit():
         "fitness": round(best_fitness, 6),
         "function": data["function"],
         "seed": data["seed"],
+        "NP": data["NP"],
         "runtime": runtime,
         "generations": generations,
         "start_fitness": round(start_fitness, 6)
