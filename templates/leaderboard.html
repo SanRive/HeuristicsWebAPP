@@ -112,10 +112,10 @@
   <th>Strategy</th>
   <th>F</th>
   <th>CR</th>
-  <th>Fitness</th>
   <th>Seed</th>
   <th>Generaciones</th>
   <th>Población</th>
+  <th>Fitness</th>
 </tr>
 {% for s in submissions %}
 <tr>
@@ -124,10 +124,10 @@
   <td>{{ s.strategy }}</td>
   <td>{{ s.F_display }}</td>
   <td>{{ s.CR_display }}</td>
-  <td>{{ s.fitness }}</td>
-  <td title="Starting fitness: {{ s.start_fitness }}">🔢 {{ s.seed }}</td>
+  <td title="Starting fitness: {{ s.start_fitness }}">{{ s.seed }}</td>
   <td>{{ s.generations }}</td>
   <td>{{ s.NP }}</td>
+  <td>{{ s.fitness }}</td>
 </tr>
 {% endfor %}
 
