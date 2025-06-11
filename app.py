@@ -47,6 +47,7 @@ def run_de(strategy, func_name, F, CR, seed=0, D=10, NP=30, time_limit=5):
     best = poblacion[np.argmin(fitness)]
     start_val = np.min(fitness)
 
+    generation_count = 0
     start_time = time.time()
     while time.time() - start_time < time_limit:
         for i in range(NP):
@@ -77,8 +78,9 @@ def run_de(strategy, func_name, F, CR, seed=0, D=10, NP=30, time_limit=5):
                 fitness[i] = f_trial
                 if f_trial < fobj(best):
                     best = trial
+        generation_count += 1
 
-    return start_val, np.min(fitness)
+    return start_val, np.min(fitness), generation_count
 
 # -------------------------------
 # Helpers
@@ -103,7 +105,7 @@ def get_range(val):
 def submit():
     data = request.json
 
-    required_fields = ["username", "strategy", "F", "CR", "function", "seed"]
+    required_fields = ["team", "strategy", "F", "CR", "function", "seed"]
     if not all(field in data for field in required_fields):
         return jsonify({"status": "error", "message": "Missing required fields."}), 400
 
@@ -112,19 +114,20 @@ def submit():
 
     try:
         start_time = time.time()
-        start_fitness, best_fitness = run_de(
+        start_fitness, best_fitness, generations = run_de(
             strategy=data["strategy"],
             func_name=data["function"],
             F=data["F"],
             CR=data["CR"],
-            seed=data["seed"]
+            seed=data["seed"],
+            D=10
         )
         runtime = round(time.time() - start_time, 3)
     except Exception as e:
         return jsonify({"status": "error", "message": f"Execution failed: {e}"}), 500
 
     result = {
-        "username": data["username"],
+        "username": data["team"],
         "strategy": data["strategy"],
         "F": data["F"],
         "CR": data["CR"],
@@ -134,6 +137,7 @@ def submit():
         "function": data["function"],
         "seed": data["seed"],
         "runtime": runtime,
+        "generations": generations,
         "start_fitness": round(start_fitness, 6)
     }
 
@@ -147,21 +151,10 @@ def submit():
         submissions.append(result)
 
     save_submissions(submissions)
-    return jsonify({"status": "ok", "fitness": result["fitness"], "runtime": result["runtime"]})
+    return jsonify({"status": "ok", "fitness": result["fitness"], "runtime": result["runtime"], "generations": result["generations"]})
 
 @app.route('/leaderboard')
 def leaderboard():
-    grouped = defaultdict(list)
-    for s in load_submissions():
-        grouped[s["function"]].append(s)
-
-    for func in grouped:
-        grouped[func].sort(key=lambda x: x.get("fitness", float("inf")))
-
-    return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
-
-@app.route('/leaderboard_admin')
-def leaderboard_admin():
     grouped = defaultdict(list)
     for s in load_submissions():
         grouped[s["function"].lower()].append(s)
@@ -169,7 +162,11 @@ def leaderboard_admin():
     for func in grouped:
         grouped[func].sort(key=lambda x: x.get("fitness", float("inf")))
 
-    return render_template("leaderboard_admin.html", grouped=grouped, functions=sorted(grouped.keys()))
+    return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
+
+@app.route('/admin_submissions')
+def admin_submissions():
+    return jsonify(load_submissions())
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
