@@ -12,7 +12,7 @@ SUBMISSIONS_FILE = "submissions.json"
 # -------------------------------
 # DE algorithm implementation
 # -------------------------------
-def run_de(strategy, func_name, F, CR, seed=0, D=10, NP=30, time_limit=10):
+def run_de(strategy, func_name, F, CR, seed=0, D=10, NP=30, time_limit=5):
     np.random.seed(seed)
 
     def rastrigin(x):
