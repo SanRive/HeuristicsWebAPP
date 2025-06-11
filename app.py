@@ -169,7 +169,7 @@ def leaderboard_admin():
     for func in grouped:
         grouped[func].sort(key=lambda x: x.get("fitness", float("inf")))
 
-    return render_template("admin_leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
+    return render_template("leaderboard_admin.html", grouped=grouped, functions=sorted(grouped.keys()))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)
