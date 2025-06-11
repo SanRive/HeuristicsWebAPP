@@ -90,6 +90,12 @@ def save_submissions(submissions):
     global submissions_memory
     submissions_memory = submissions
 
+def get_range(val):
+    step = 0.25
+    lower = round(max(0.0, val - step / 2), 2)
+    upper = round(min(1.0, val + step / 2), 2)
+    return f"{lower} - {upper}"
+
 # -------------------------------
 # Routes
 # -------------------------------
@@ -122,6 +128,8 @@ def submit():
         "strategy": data["strategy"],
         "F": data["F"],
         "CR": data["CR"],
+        "F_display": get_range(data["F"]),
+        "CR_display": get_range(data["CR"]),
         "fitness": round(best_fitness, 6),
         "function": data["function"],
         "seed": data["seed"],
@@ -153,4 +161,4 @@ def leaderboard():
     return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0',debug=True)
