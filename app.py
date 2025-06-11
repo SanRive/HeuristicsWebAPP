@@ -104,7 +104,7 @@ def submit():
             F=data["F"],
             CR=data["CR"],
             seed=data["seed"],
-            time_limit=10
+            time_limit=5
         )
         runtime = round(time.time() - start_time, 3)
     except Exception as e:
