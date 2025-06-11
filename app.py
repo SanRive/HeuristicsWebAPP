@@ -146,4 +146,4 @@ def leaderboard():
     return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=false)
+    app.run(host='0.0.0.0', debug=False)
