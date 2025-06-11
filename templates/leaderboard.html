@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaderboard</title>
+    <style>
+        table { border-collapse: collapse; width: 80%; margin: auto; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #eee; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">Heuristics Tournament Leaderboard</h2>
+    <table>
+        <tr>
+            <th>Rank</th>
+            <th>Team</th>
+            <th>Function</th>
+            <th>Strategy</th>
+            <th>F</th>
+            <th>CR</th>
+            <th>Fitness</th>
+            <th>Seed</th>
+        </tr>
+        {% for s in submissions %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ s.team }}</td>
+            <td>{{ s.function }}</td>
+            <td>{{ s.strategy }}</td>
+            <td>{{ s.F }}</td>
+            <td>{{ s.CR }}</td>
+            <td>{{ s.fitness }}</td>
+            <td>{{ s.seed }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html> 
