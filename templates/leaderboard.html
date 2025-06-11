@@ -1,106 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Leaderboard</title>
-    <style>
-        /* General body styles */
-        body {
-            background-color: #ffffff; /* White background */
-            color: #333333; /* Darker text for readability */
-            font-family: 'Segoe UI', 'Arial', sans-serif; /* Modern, readable font */
-            margin: 20px; /* Add some padding around the content */
-            line-height: 1.6; /* Improve text readability */
-        }
+  <title>Leaderboard</title>
+  <style>
+    body {
+      background-color: #fff;
+      color: #333;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
 
-        /* Leaderboard Title */
-        h2 {
-            text-align: center;
-            color: #2c3e50; /* A darker, professional blue/gray */
-            font-size: 2.5em; /* Larger title */
-            margin-bottom: 30px; /* More space below the title */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle shadow for depth */
-        }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
 
-        /* Table styles */
-        table {
-            border-collapse: collapse;
-            width: 90%; /* Make table wider */
-            max-width: 1000px; /* Limit max width for very large screens */
-            margin: auto; /* Center the table */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for the whole table */
-            border-radius: 8px; /* Slightly rounded corners for the table */
-            overflow: hidden; /* Ensures shadow/border-radius works correctly with inner borders */
-        }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
 
-        /* Table headers */
-        th {
-            background-color: #4CAF50; /* A pleasant green */
-            color: white; /* White text for contrast */
-            padding: 15px 10px; /* More padding for headers */
-            text-align: center;
-            font-weight: bold;
-            text-transform: uppercase; /* Uppercase header text */
-            letter-spacing: 0.05em; /* Slightly spaced letters */
-        }
+    .tab {
+      background: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      margin: 0 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: capitalize;
+    }
 
-        /* Table cells (data) */
-        td {
-            border: 1px solid #e0e0e0; /* Lighter border color */
-            padding: 12px 10px; /* More padding for cells */
-            text-align: center;
-            vertical-align: middle; /* Center content vertically */
-        }
+    .tab.active {
+      background-color: #2e7d32;
+    }
 
-        /* Alternating row colors for readability */
-        tr:nth-child(even) {
-            background-color: #f8f8f8; /* Very light gray for even rows */
-        }
+    table {
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 1000px;
+      margin: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
 
-        /* Hover effect for rows */
-        tr:hover {
-            background-color: #f1f1f1; /* Slightly darker on hover */
-            cursor: pointer; /* Indicate interactivity */
-        }
+    th {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 10px;
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
-        /* Specific column width adjustments if needed (optional) */
-        /*
-        th:nth-child(1), td:nth-child(1) { width: 5%; } // Rank
-        th:nth-child(2), td:nth-child(2) { width: 15%; } // Team
-        th:nth-child(3), td:nth-child(3) { width: 10%; } // Function
-        th:nth-child(4), td:nth-child(4) { width: 15%; } // Strategy
-        th:nth-child(5), td:nth-child(5) { width: 5%; }  // F
-        th:nth-child(6), td:nth-child(6) { width: 5%; }  // CR
-        th:nth-child(7), td:nth-child(7) { width: 15%; } // Fitness
-        th:nth-child(8), td:nth-child(8) { width: 10%; } // Seed
-        */
+    td {
+      border: 1px solid #e0e0e0;
+      padding: 12px 10px;
+      text-align: center;
+      vertical-align: middle;
+    }
 
-    </style>
+    tr:nth-child(even) {
+      background-color: #f8f8f8;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <h2>Heuristics Tournament Leaderboard</h2>
-    <table>
-        <tr>
-            <th>Rank</th>
-            <th>Team</th>
-            <th>Function</th>
-            <th>Strategy</th>
-            <th>F</th>
-            <th>CR</th>
-            <th>Fitness</th>
-            <th>Seed</th>
-        </tr>
-        {% for s in submissions %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ s.team }}</td>
-            <td>{{ s.function }}</td>
-            <td>{{ s.strategy }}</td>
-            <td>{{ s.F }}</td>
-            <td>{{ s.CR }}</td>
-            <td>{{ s.fitness }}</td>
-            <td>{{ s.seed }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+  <h2>Heuristics Tournament Leaderboard</h2>
+
+  <div class="tabs">
+    {% for func in functions %}
+    <div class="tab {% if loop.first %}active{% endif %}" onclick="switchTab('{{ func }}')">{{ func }}</div>
+    {% endfor %}
+  </div>
+
+  {% for func, submissions in grouped.items() %}
+  <table id="table-{{ func }}" class="leaderboard-table {% if not loop.first %}hidden{% endif %}">
+    <tr>
+      <th>Rank</th>
+      <th>Team</th>
+      <th>Strategy</th>
+      <th>F</th>
+      <th>CR</th>
+      <th>Fitness</th>
+      <th>Seed</th>
+    </tr>
+    {% for s in submissions %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ s.team }}</td>
+      <td>{{ s.strategy }}</td>
+      <td>{{ s.F }}</td>
+      <td>{{ s.CR }}</td>
+      <td>{{ s.fitness }}</td>
+      <td title="Start: {{ s.start_fitness }}">🔢 {{ s.seed }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+
+  <script>
+    function switchTab(func) {
+      // Hide all tables
+      document.querySelectorAll(".leaderboard-table").forEach(t => t.classList.add("hidden"));
+      // Remove active class from all tabs
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      // Show selected
+      document.getElementById("table-" + func).classList.remove("hidden");
+      document.querySelectorAll(".tab").forEach(tab => {
+        if (tab.textContent === func) tab.classList.add("active");
+      });
+    }
+  </script>
 </body>
 </html>
