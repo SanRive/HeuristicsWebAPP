@@ -160,5 +160,16 @@ def leaderboard():
 
     return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
 
+@app.route('/eaderboard_admin')
+def admin_leaderboard():
+    grouped = defaultdict(list)
+    for s in load_submissions():
+        grouped[s["function"].lower()].append(s)
+
+    for func in grouped:
+        grouped[func].sort(key=lambda x: x.get("fitness", float("inf")))
+
+    return render_template("admin_leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)
