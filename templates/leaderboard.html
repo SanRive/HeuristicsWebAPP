@@ -106,28 +106,31 @@
 
   {% for func, submissions in grouped.items() %}
   <table id="table-{{ func }}" class="leaderboard-table {% if not loop.first %}hidden{% endif %}" data-function="{{ func }}">
-    <tr>
-      <th>Rank</th>
-      <th>Username</th>
-      <th>Strategy</th>
-      <th>F</th>
-      <th>CR</th>
-      <th>Fitness</th>
-      <th>Seed</th>
-      <th>Generaciones</th>
-    </tr>
-    {% for s in submissions %}
-    <tr>
-      <td>{{ loop.index }}</td>
-      <td>{{ s.username }}</td>
-      <td>{{ s.strategy }}</td>
-      <td>{{ s.F_display }}</td>
-      <td>{{ s.CR_display }}</td>
-      <td>{{ s.fitness }}</td>
-      <td title="Starting fitness: {{ s.start_fitness }}">🔢 {{ s.seed }}</td>
-      <td>{{ s.generations }}</td>
-    </tr>
-    {% endfor %}
+<tr>
+  <th>Rank</th>
+  <th>Username</th>
+  <th>Strategy</th>
+  <th>F</th>
+  <th>CR</th>
+  <th>Fitness</th>
+  <th>Seed</th>
+  <th>Generaciones</th>
+  <th>Población</th>
+</tr>
+{% for s in submissions %}
+<tr>
+  <td>{{ loop.index }}</td>
+  <td>{{ s.username }}</td>
+  <td>{{ s.strategy }}</td>
+  <td>{{ s.F_display }}</td>
+  <td>{{ s.CR_display }}</td>
+  <td>{{ s.fitness }}</td>
+  <td title="Starting fitness: {{ s.start_fitness }}">🔢 {{ s.seed }}</td>
+  <td>{{ s.generations }}</td>
+  <td>{{ s.NP }}</td>
+</tr>
+{% endfor %}
+
   </table>
   {% endfor %}
 
