@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaderboard</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+    body {
+      background-color: #fff;
+      color: #333;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      background: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      margin: 0 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: capitalize;
+    }
+
+    .tab.active {
+      background-color: #2e7d32;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 1000px;
+      margin: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 10px;
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      border: 1px solid #e0e0e0;
+      padding: 12px 10px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8f8f8;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .formula, .summary {
+      text-align: center;
+      font-size: 1.2em;
+      margin: 10px auto;
+    }
+
+    .summary {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h2>Heuristics Tournament Leaderboard</h2>
+
+  <div class="tabs">
+    {% for func in functions %}
+    <div class="tab {% if loop.first %}active{% endif %}" onclick="switchTab('{{ func }}')">{{ func }}</div>
+    {% endfor %}
+  </div>
+
+  <div id="formula" class="formula"></div>
+  <div id="summary" class="summary"></div>
+
+  {% for func, submissions in grouped.items() %}
+  <table id="table-{{ func }}" class="leaderboard-table {% if not loop.first %}hidden{% endif %}" data-function="{{ func }}">
+    <tr>
+      <th>Rank</th>
+      <th>Username</th>
+      <th>Strategy</th>
+      <th>F</th>
+      <th>CR</th>
+      <th>Fitness</th>
+      <th>Seed</th>
+    </tr>
+    {% for s in submissions %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ s.username }}</td>
+      <td>{{ s.strategy }}</td>
+      <td>{{ s.F }}</td>
+      <td>{{ s.CR }}</td>
+      <td>{{ s.fitness }}</td>
+      <td title="Starting fitness: {{ s.start_fitness }}">🔢 {{ s.seed }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+
+  <script>
+    const formulas = {
+      rastrigin: `f(\\mathbf{x}) = 10n + \\sum_{i=1}^{n} \\left[x_i^2 - 10\\cos(2\\pi x_i)\\right]`,
+      ackley: `f(\\mathbf{x}) = -20\\exp\\left(-0.2\\sqrt{\\frac{1}{n}\\sum x_i^2}\\right) - \\exp\\left(\\frac{1}{n}\\sum\\cos(2\\pi x_i)\\right) + 20 + e`,
+      griewank: `f(\\mathbf{x}) = 1 + \\frac{1}{4000} \\sum x_i^2 - \\prod \\cos\\left(\\frac{x_i}{\\sqrt{i}}\\right)`
+    };
+
+    function switchTab(func) {
+      document.querySelectorAll(".leaderboard-table").forEach(t => t.classList.add("hidden"));
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+
+      document.getElementById("table-" + func).classList.remove("hidden");
+      document.querySelectorAll(".tab").forEach(tab => {
+        if (tab.textContent === func) tab.classList.add("active");
+      });
+
+      // Update formula
+      document.getElementById("formula").innerHTML = `\\(${formulas[func]}\\)`;
+      MathJax.typeset();
+
+      // Update summary
+      const table = document.getElementById("table-" + func);
+      const fitnesses = Array.from(table.querySelectorAll("td:nth-child(6)")).map(td => parseFloat(td.textContent));
+      const avg = (fitnesses.reduce((a, b) => a + b, 0) / fitnesses.length).toFixed(4);
+      document.getElementById("summary").textContent = `Average Best Fitness: ${avg}`;
+    }
+
+    window.onload = () => {
+  const firstFunc = document.querySelector(".tab").textContent;
+  switchTab(firstFunc);
+};
+
+  </script>
+</body>
+</html>
