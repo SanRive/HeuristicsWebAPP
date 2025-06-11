@@ -103,7 +103,7 @@ def get_range(val):
 def submit():
     data = request.json
 
-    required_fields = ["team", "strategy", "F", "CR", "function", "seed"]
+    required_fields = ["username", "strategy", "F", "CR", "function", "seed"]
     if not all(field in data for field in required_fields):
         return jsonify({"status": "error", "message": "Missing required fields."}), 400
 
@@ -124,7 +124,7 @@ def submit():
         return jsonify({"status": "error", "message": f"Execution failed: {e}"}), 500
 
     result = {
-        "username": data["team"],
+        "username": data["username"],
         "strategy": data["strategy"],
         "F": data["F"],
         "CR": data["CR"],
