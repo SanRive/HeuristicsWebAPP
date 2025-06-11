@@ -33,7 +33,15 @@ def run_de(strategy, func_name, F, CR, seed=0, D=10, NP=30, time_limit=5):
     func_map = {"rastrigin": rastrigin, "ackley": ackley, "griewank": griewank}
     fobj = func_map[func_name]
 
-    lim_inf, lim_sup = -5.12, 5.12
+    if func_name == "rastrigin":
+        lim_inf, lim_sup = -5.12, 5.12
+    elif func_name == "ackley":
+        lim_inf, lim_sup = -32.768, 32.768
+    elif func_name == "griewank":
+        lim_inf, lim_sup = -600, 600
+    else:
+        raise ValueError("Unknown function name")
+
     poblacion = np.random.uniform(lim_inf, lim_sup, (NP, D))
     fitness = np.array([fobj(ind) for ind in poblacion])
     best = poblacion[np.argmin(fitness)]
@@ -103,8 +111,7 @@ def submit():
             func_name=data["function"],
             F=data["F"],
             CR=data["CR"],
-            seed=data["seed"],
-            time_limit=5
+            seed=data["seed"]
         )
         runtime = round(time.time() - start_time, 3)
     except Exception as e:
@@ -146,4 +153,4 @@ def leaderboard():
     return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)
