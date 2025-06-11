@@ -118,7 +118,7 @@ def submit():
         return jsonify({"status": "error", "message": f"Execution failed: {e}"}), 500
 
     result = {
-        "team": data["team"],
+        "username": data["team"],
         "strategy": data["strategy"],
         "F": data["F"],
         "CR": data["CR"],
@@ -130,10 +130,10 @@ def submit():
     }
 
     submissions = load_submissions()
-    existing = next((s for s in submissions if s['team'] == result['team'] and s['function'] == result['function']), None)
+    existing = next((s for s in submissions if s['username'] == result['username'] and s['function'] == result['function']), None)
     if existing:
         if result["fitness"] < existing.get("fitness", float("inf")):
-            submissions = [s for s in submissions if not (s['team'] == result['team'] and s['function'] == result['function'])]
+            submissions = [s for s in submissions if not (s['username'] == result['username'] and s['function'] == result['function'])]
             submissions.append(result)
     else:
         submissions.append(result)
@@ -153,4 +153,4 @@ def leaderboard():
     return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
 
 if __name__ == '__main__':
-    app.run(port=0.0.0.0, debug=True)
+    app.run(host='0.0.0.0', debug=True)
