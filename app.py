@@ -3,11 +3,14 @@ import json
 import os
 import time
 import numpy as np
+from collections import defaultdict
 
 app = Flask(__name__)
 
 # In-memory submission store (not persistent)
 submissions_memory = []
+
+ALLOWED_SEEDS = [42, 123, 999]
 
 # -------------------------------
 # DE algorithm implementation
@@ -34,6 +37,7 @@ def run_de(strategy, func_name, F, CR, seed=0, D=10, NP=30, time_limit=5):
     poblacion = np.random.uniform(lim_inf, lim_sup, (NP, D))
     fitness = np.array([fobj(ind) for ind in poblacion])
     best = poblacion[np.argmin(fitness)]
+    start_val = np.min(fitness)
 
     start_time = time.time()
     while time.time() - start_time < time_limit:
@@ -66,7 +70,7 @@ def run_de(strategy, func_name, F, CR, seed=0, D=10, NP=30, time_limit=5):
                 if f_trial < fobj(best):
                     best = trial
 
-    return np.min(fitness)
+    return start_val, np.min(fitness)
 
 # -------------------------------
 # Helpers
@@ -89,9 +93,12 @@ def submit():
     if not all(field in data for field in required_fields):
         return jsonify({"status": "error", "message": "Missing required fields."}), 400
 
+    if data["seed"] not in ALLOWED_SEEDS:
+        return jsonify({"status": "error", "message": f"Seed {data['seed']} not allowed. Use one of {ALLOWED_SEEDS}."}), 400
+
     try:
         start_time = time.time()
-        fitness = run_de(
+        start_fitness, best_fitness = run_de(
             strategy=data["strategy"],
             func_name=data["function"],
             F=data["F"],
@@ -108,17 +115,18 @@ def submit():
         "strategy": data["strategy"],
         "F": data["F"],
         "CR": data["CR"],
-        "fitness": round(fitness, 6),
+        "fitness": round(best_fitness, 6),
         "function": data["function"],
         "seed": data["seed"],
-        "runtime": runtime
+        "runtime": runtime,
+        "start_fitness": round(start_fitness, 6)
     }
 
     submissions = load_submissions()
-    existing = next((s for s in submissions if s['team'] == result['team']), None)
+    existing = next((s for s in submissions if s['team'] == result['team'] and s['function'] == result['function']), None)
     if existing:
         if result["fitness"] < existing.get("fitness", float("inf")):
-            submissions = [s for s in submissions if s['team'] != result['team']]
+            submissions = [s for s in submissions if not (s['team'] == result['team'] and s['function'] == result['function'])]
             submissions.append(result)
     else:
         submissions.append(result)
@@ -128,9 +136,14 @@ def submit():
 
 @app.route('/leaderboard')
 def leaderboard():
-    submissions = load_submissions()
-    submissions.sort(key=lambda x: x.get('fitness', float('inf')))
-    return render_template("leaderboard.html", submissions=submissions)
+    grouped = defaultdict(list)
+    for s in load_submissions():
+        grouped[s["function"]].append(s)
+
+    for func in grouped:
+        grouped[func].sort(key=lambda x: x.get("fitness", float("inf")))
+
+    return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=false)
