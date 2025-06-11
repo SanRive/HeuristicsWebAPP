@@ -161,7 +161,7 @@ def leaderboard():
     return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
 
 @app.route('/leaderboard_admin')
-def admin_leaderboard():
+def leaderboard_admin():
     grouped = defaultdict(list)
     for s in load_submissions():
         grouped[s["function"].lower()].append(s)
