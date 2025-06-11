@@ -108,7 +108,7 @@
   <table id="table-{{ func }}" class="leaderboard-table {% if not loop.first %}hidden{% endif %}" data-function="{{ func }}">
     <tr>
       <th>Rank</th>
-      <th>Team</th>
+      <th>Username</th>
       <th>Strategy</th>
       <th>F</th>
       <th>CR</th>
@@ -118,7 +118,7 @@
     {% for s in submissions %}
     <tr>
       <td>{{ loop.index }}</td>
-      <td>{{ s.team }}</td>
+      <td>{{ s.username }}</td>
       <td>{{ s.strategy }}</td>
       <td>{{ s.F }}</td>
       <td>{{ s.CR }}</td>
