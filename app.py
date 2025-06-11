@@ -160,7 +160,7 @@ def leaderboard():
 
     return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
 
-@app.route('/eaderboard_admin')
+@app.route('/leaderboard_admin')
 def admin_leaderboard():
     grouped = defaultdict(list)
     for s in load_submissions():
