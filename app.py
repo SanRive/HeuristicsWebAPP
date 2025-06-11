@@ -166,6 +166,17 @@ def leaderboard():
 
     return render_template("leaderboard.html", grouped=grouped, functions=sorted(grouped.keys()))
 
+@app.route('/leaderboard_admin')
+def leaderboard_admin():
+    grouped = defaultdict(list)
+    for s in load_submissions():
+        grouped[s["function"].lower()].append(s)
+
+    for func in grouped:
+        grouped[func].sort(key=lambda x: x.get("fitness", float("inf")))
+
+    return render_template("leaderboard_admin.html", grouped=grouped, functions=sorted(grouped.keys()))
+
 @app.route('/admin_submissions')
 def admin_submissions():
     return jsonify(load_submissions())
